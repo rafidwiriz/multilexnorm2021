@@ -30,7 +30,7 @@ class OutputAssembler:
         postprocessed_path = f"{self.directory}/outputs.txt"
 
         if not os.path.isdir(self.directory):
-            os.mkdir(self.directory)
+            os.makedirs(self.directory)
 
         with open(raw_path, "w") as f:
             for i, input_sentence in enumerate(inputs):

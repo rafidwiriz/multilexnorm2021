@@ -24,8 +24,8 @@ if __name__ == "__main__":
     timestamp = f"{datetime.datetime.today():%m-%d-%y_%H-%M-%S}"
     directory = f"outputs/{args.dataset.language}_{args.model.pretrained_lm.split('/')[-1]}_{timestamp}"
     predictions_directory = f"{directory}/test_predictions"
-    os.mkdir(directory)
-    os.mkdir(predictions_directory)
+    os.makedirs(directory)
+    os.makedirs(predictions_directory)
 
     if args.dataset.train_on_dev:
         name = f"{args.dataset.language}_{args.seed}_dev_{args.dataset.mode}"
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     def inference(args, model, input_data, output_dir):
         args.dataset.path = f"data/multilexnorm/test-eval/test/{input_data}"
         if not os.path.isdir(output_dir):
-            os.mkdir(output_dir)
+            os.makedirs(output_dir)
 
         data = InferenceData(args)
         assembler = OutputAssembler(output_dir, args.trainer.output_callback, data.dataset)
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     def all_inference(args, model, mode, n_beams):
         if not os.path.isdir(f"ablation/{mode}"):
-            os.mkdir(f"ablation/{mode}")
+            os.makedirs(f"ablation/{mode}")
 
         args.model.n_beams = n_beams
         inference(args, model, f"intrinsic_evaluation/{args.dataset.language}/test.norm.masked", f"ablation/{mode}/{args.dataset.language}_{n_beams}")
