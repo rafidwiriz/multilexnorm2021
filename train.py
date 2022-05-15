@@ -1,11 +1,11 @@
 import datetime
-import sys
 import pytorch_lightning as pl
 import os
 import torch
 from pytorch_lightning.utilities.apply_func import move_data_to_device
 
 from model.model import Model
+from argparse import ArgumentParser
 from callbacks.lr_decay import LRDecay
 from callbacks.error_callback import ErrorCallback
 from callbacks.output_callback import OutputCallback
@@ -18,7 +18,13 @@ from utility.output_assembler import OutputAssembler
 
 
 if __name__ == "__main__":
-    args = Params().load(sys.argv[1:])
+    parser = ArgumentParser()
+    parser.add_argument("--config", default=None)
+    parser.add_argument("--gpus", default=None)
+    parser.add_argument("--tpu-cores", default=None)
+    parser_args = parser.parse_args()
+    
+    args = Params().load(parser_args.config)
     pl.seed_everything(args.seed)
 
     timestamp = f"{datetime.datetime.today():%m-%d-%y_%H-%M-%S}"
@@ -51,8 +57,8 @@ if __name__ == "__main__":
             DelayFinetuning(args.trainer.delay_finetuning, data),
             CheckpointCallback(args)
         ],
-        accelerator="auto",
-        devices=1 if torch.cuda.is_available() else None
+        gpus=parser_args.gpus,
+        tpu_cores=parser_args.tpu_cores
     )
     trainer.fit(model)
 
