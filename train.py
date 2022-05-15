@@ -50,7 +50,9 @@ if __name__ == "__main__":
             ErrorCallback(args, directory, data.valid_set),
             DelayFinetuning(args.trainer.delay_finetuning, data),
             CheckpointCallback(args)
-        ]
+        ],
+        accelerator="auto",
+        devices=1 if torch.cuda.is_available() else None
     )
     trainer.fit(model)
 
