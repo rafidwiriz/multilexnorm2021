@@ -45,7 +45,6 @@ if __name__ == "__main__":
     print(f"\nCONFIG:\n{args}")
 
     data = TrainingData(args)
-    '''
     model = Model(args, data)
 
     trainer = pl.Trainer(
@@ -103,4 +102,3 @@ if __name__ == "__main__":
             inference(args, model, f"extrinsic_evaluation/ud-tr-iwt151.test.norm.masked", f"ablation/{mode}/ud-tr-iwt151_{n_beams}")
 
     all_inference(args, model, "test_prediction_dir", 1)
-    '''
