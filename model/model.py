@@ -55,6 +55,7 @@ class Model(pl.LightningModule):
             "scores": scores,
             "sentence_ids": sentence_ids,
             "word_ids": word_ids,
+            "labels": batch["labels"]
         }
         print(out_dict)
         return out_dict
