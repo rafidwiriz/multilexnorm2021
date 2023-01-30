@@ -10,7 +10,6 @@ class Error:
         inputs, gold_outputs = self.gold_dataset.inputs, self.gold_dataset.outputs
         lai, accuracy, error, precision, recall, f1, false_negatives, false_positives = self.calculate_error(inputs, gold_outputs, predictions)
         
-        print(predictions)
         bleu_gold = [[x] for x in gold_outputs]
         bleu_score = corpus_bleu(bleu_gold, predictions)
         
