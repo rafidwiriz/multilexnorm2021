@@ -49,13 +49,16 @@ class Model(pl.LightningModule):
 
         outputs = self.tokenizer.batch_decode(outputs.sequences, skip_special_tokens=True)
         outputs = [outputs[i*n_beams:(i+1)*n_beams] for i in range(len(sentence_ids))]
+        
+        labels = self.tokenizer.batch_decode(batch["labels"], skip_special_tokens=True)
+        labels = [labels[i*n_beams:(i+1)*n_beams] for i in range(len(sentence_ids))]
 
         out_dict = {
             "predictions": outputs,
             "scores": scores,
             "sentence_ids": sentence_ids,
             "word_ids": word_ids,
-            "labels": batch["labels"]
+            "labels": labels
         }
         print(out_dict)
         return out_dict
