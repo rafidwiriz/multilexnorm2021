@@ -3,6 +3,9 @@ from transformers import T5ForConditionalGeneration
 from utility.adafactor import Adafactor
 import torch
 
+from nltk.translate.bleu_score import corpus_bleu
+from jiwer import wer
+
 
 class Model(pl.LightningModule):
     def __init__(self, args, dataset):
@@ -15,6 +18,9 @@ class Model(pl.LightningModule):
         self.is_finetuning = False
         self.step = 1.0
         self.step_size = dataset.batch_size * args.trainer.n_gpus / args.trainer.total_batch_size
+        
+        self.target = {}
+        self.ref = {}
 
     def forward(self, batch):
         output = self.model(
@@ -50,6 +56,7 @@ class Model(pl.LightningModule):
             "sentence_ids": sentence_ids,
             "word_ids": word_ids,
         }
+        print(out_dict)
         return out_dict
 
     def training_step(self, batch, _):
