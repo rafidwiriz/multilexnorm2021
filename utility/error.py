@@ -10,6 +10,7 @@ class Error:
         inputs, gold_outputs = self.gold_dataset.inputs, self.gold_dataset.outputs
         lai, accuracy, error, precision, recall, f1, false_negatives, false_positives = self.calculate_error(inputs, gold_outputs, predictions)
         
+        print(predictions)
         wer_score = wer(gold_outputs, predictions)
         
         bleu_predictions = [x.split(' ') for x in predictions]
