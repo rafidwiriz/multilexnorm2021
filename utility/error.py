@@ -11,11 +11,12 @@ class Error:
         lai, accuracy, error, precision, recall, f1, false_negatives, false_positives = self.calculate_error(inputs, gold_outputs, predictions)
         
         print(predictions)
-        wer_score = wer(gold_outputs, predictions)
+        bleu_gold = [[x] for x in gold_outputs]
+        bleu_score = corpus_bleu(bleu_gold, predictions)
         
-        bleu_predictions = [x.split(' ') for x in predictions]
-        bleu_gold = [[x.split(' ')] for x in gold_outputs]
-        bleu_score = corpus_bleu(bleu_gold, bleu_predictions)
+        wer_predictions = [' '.join(x) for x in predictions]
+        wer_gold = [' '.join(x) for x in gold_outputs]
+        wer_score = wer(wer_gold, wer_predictions)
 
         if output_directory:
             self.log(output_directory, inputs, gold_outputs, predictions, false_positives, false_negatives)
