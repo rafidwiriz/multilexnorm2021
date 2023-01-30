@@ -30,8 +30,8 @@ class ErrorCallback(pl.Callback):
         pl_module.log("valid/precision", precision)
         pl_module.log("valid/recall", recall)
         pl_module.log("valid/f1", f1)
-        pl_module.log("valud/bleu", bleu)
-        pl_module.log("valud/wer", wer)
+        pl_module.log("valid/bleu", bleu)
+        pl_module.log("valid/wer", wer)
 
         if not self.save_best or bleu > self.best:
             directory = f"checkpoints/{self.language}/{self.model_name}_{self.mode}_{self.seed}_{'best' if self.save_best else 'last'}"
