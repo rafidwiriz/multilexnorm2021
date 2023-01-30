@@ -1,3 +1,6 @@
+from nltk.translate.bleu_score import corpus_bleu
+from jiwer import wer
+
 class Error:
     def __init__(self, gold_dataset):
         super().__init__()
@@ -6,11 +9,17 @@ class Error:
     def __call__(self, predictions, output_directory=None):
         inputs, gold_outputs = self.gold_dataset.inputs, self.gold_dataset.outputs
         lai, accuracy, error, precision, recall, f1, false_negatives, false_positives = self.calculate_error(inputs, gold_outputs, predictions)
+        
+        wer_score = wer(gold_outputs, predictions)
+        
+        bleu_predictions = [x.split(' ') for x in predictions]
+        bleu_gold = [[x.split(' ')] for x in gold_outputs]
+        bleu_score = corpus_bleu(bleu_gold, bleu_predictions)
 
         if output_directory:
             self.log(output_directory, inputs, gold_outputs, predictions, false_positives, false_negatives)
 
-        return lai, accuracy, error, precision, recall, f1
+        return lai, accuracy, error, precision, recall, f1, bleu_score, wer_score
 
     def log(self, output_directory, inputs, gold_outputs, predictions, false_positives, false_negatives):
         with open(f"{output_directory}/aligned_outputs.txt", "w") as f:

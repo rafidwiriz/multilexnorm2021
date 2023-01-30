@@ -3,9 +3,6 @@ from transformers import T5ForConditionalGeneration
 from utility.adafactor import Adafactor
 import torch
 
-from nltk.translate.bleu_score import corpus_bleu
-from jiwer import wer
-
 
 class Model(pl.LightningModule):
     def __init__(self, args, dataset):
@@ -47,13 +44,8 @@ class Model(pl.LightningModule):
         else:
             scores = [[0.0] for i in range(len(sentence_ids))]
 
-        print(outputs.sequences)
-        print(batch["input_ids"])
         outputs = self.tokenizer.batch_decode(outputs.sequences, skip_special_tokens=True)
         outputs = [outputs[i*n_beams:(i+1)*n_beams] for i in range(len(sentence_ids))]
-        
-        #labels = self.tokenizer.batch_decode(batch["labels"], skip_special_tokens=True)
-        #labels = [labels[i*n_beams:(i+1)*n_beams] for i in range(len(sentence_ids))]
 
         out_dict = {
             "predictions": outputs,
@@ -61,7 +53,6 @@ class Model(pl.LightningModule):
             "sentence_ids": sentence_ids,
             "word_ids": word_ids
         }
-        print(out_dict)
         return out_dict
 
     def training_step(self, batch, _):

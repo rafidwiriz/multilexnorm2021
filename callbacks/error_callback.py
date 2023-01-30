@@ -22,7 +22,7 @@ class ErrorCallback(pl.Callback):
 
         directory = f"{self.directory}/test_predictions/{pl_module.current_epoch}"
         _, predictions = open_dataset(f"{directory}/outputs.txt")
-        lai, accuracy, error, precision, recall, f1 = self.error_processor(predictions, directory)
+        lai, accuracy, error, precision, recall, f1, bleu, wer = self.error_processor(predictions, directory)
 
         pl_module.log("valid/baseline_accuracy", lai)
         pl_module.log("valid/accuracy", accuracy)
@@ -30,14 +30,16 @@ class ErrorCallback(pl.Callback):
         pl_module.log("valid/precision", precision)
         pl_module.log("valid/recall", recall)
         pl_module.log("valid/f1", f1)
+        pl_module.log("valud/bleu", bleu)
+        pl_module.log("valud/wer", wer)
 
-        if not self.save_best or error > self.best:
+        if not self.save_best or bleu > self.best:
             directory = f"checkpoints/{self.language}/{self.model_name}_{self.mode}_{self.seed}_{'best' if self.save_best else 'last'}"
 #            pl_module.model.save_pretrained(directory)
         else:
             shutil.rmtree(directory)  # do not clutter the output directory
 
-        if error > self.best:
-            self.best = error
-            pl_module.logger.experiment.summary["error"] = self.best
+        if bleu > self.best:
+            self.best = bleu
+            pl_module.logger.experiment.summary["bleu"] = self.best
             pl_module.best = self.best
